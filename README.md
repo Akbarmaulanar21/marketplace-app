@@ -1,46 +1,70 @@
-# 📱 Marketplace App Documentation
+# 📱 Marketplace App
 
-## 📝 **1. Pendahuluan**
-Marketplace App adalah aplikasi mobile sederhana berbasis React Native yang memungkinkan pengguna untuk:
-1. Melihat produk dari API `https://dummyjson.com/products`.
-2. Menambahkan produk ke keranjang belanja.
-3. Melakukan pembayaran dengan input jumlah pembayaran.
-4. Menyimpan riwayat transaksi ke `AsyncStorage`.
-5. Melihat detail transaksi dan menghapus transaksi jika diperlukan.
+Marketplace App adalah aplikasi demo marketplace sederhana yang dibangun menggunakan **React Native**, **Expo**, dan **AsyncStorage**. Aplikasi ini memungkinkan pengguna untuk melihat produk, menambahkannya ke keranjang, melakukan pembayaran, dan melihat riwayat transaksi.
 
----
+## 🎯 Tujuan Aplikasi
+Aplikasi ini bertujuan untuk memberikan pemahaman dasar tentang:
+- Penggunaan **React Native** untuk mobile development.
+- Integrasi **API** untuk mendapatkan data produk.
+- Manajemen state menggunakan **Context API**.
+- Penyimpanan data lokal dengan **AsyncStorage**.
 
-## 📂 **2. Struktur Folder**
+## 📂 Struktur Folder
 ```
 marketplace-app/
-├─ assets/                   # Ikon & gambar aplikasi
-├─ src/
-│  ├─ components/            # Komponen UI terpisah (CartItem, ProductCard)
-│  ├─ context/               # CartContext untuk state global
-│  ├─ screens/               # Halaman utama aplikasi (ProductScreen, CartScreen, dll.)
-│  ├─ AppNavigator.js        # Navigasi antar halaman
-│  └─ App.js                 # Entry point aplikasi
-├─ .env                      # Konfigurasi environment (opsional)
-├─ package.json              # Dependensi dan script
-├─ eas.json                  # Konfigurasi build Expo
-└─ README.md                 # Dokumentasi ini
+├── assets/                # Gambar dan ikon
+├── src/
+│   ├── components/        # Komponen UI terpisah (CartItem.js, ProductCard.js)
+│   ├── context/           # CartContext.js untuk manajemen state
+│   ├── screens/           # Halaman utama aplikasi
+│   │   ├── ProductScreen.js
+│   │   ├── CartScreen.js
+│   │   ├── TransactionList.js
+│   │   └── TransactionDetail.js
+│   ├── AppNavigator.js    # Navigasi aplikasi
+│   └── api.js             # Konfigurasi endpoint API
+├── App.js                 # Entry point aplikasi
+├── package.json           # Dependensi proyek
+└── README.md              # Dokumentasi proyek
 ```
 
----
+## 🌐 API
+Aplikasi ini menggunakan **DummyJSON API** untuk data produk:
+- Endpoint: [https://dummyjson.com/products](https://dummyjson.com/products)
 
-## ⚙️ **3. Instalasi & Konfigurasi**
-### 💻 **Setup Project**
-1. **Kloning Repositori:**
+## 🚀 Fitur Utama
+1. **Halaman Produk:**
+   - Menampilkan daftar produk dalam bentuk grid.
+   - Klik produk untuk melihat detail atau tambahkan ke keranjang.
+
+2. **Keranjang:**
+   - Lihat daftar produk yang dipilih.
+   - Update jumlah produk (+/-).
+   - Hapus produk dengan tombol **X** di pojok kanan atas.
+   - **Badge Keranjang** menunjukkan jumlah item yang dipilih.
+
+3. **Pembayaran:**
+   - Input jumlah pembayaran.
+   - Kembalian otomatis dihitung.
+   - Transaksi disimpan ke **AsyncStorage**.
+
+4. **Riwayat Transaksi:**
+   - Tampilkan daftar transaksi dengan ID unik.
+   - Klik transaksi untuk melihat detailnya.
+   - Hapus transaksi jika tidak diperlukan.
+
+## 🔨 Build & Deploy
+Untuk menjalankan proyek ini secara lokal:
+
+1. **Clone Repository:**
 ```bash
 git clone https://github.com/username/marketplace-app.git
 cd marketplace-app
 ```
 
-2. **Instalasi Dependensi:**
+2. **Install Dependensi:**
 ```bash
 npm install
-# atau
-yarn install
 ```
 
 3. **Jalankan Aplikasi:**
@@ -48,78 +72,14 @@ yarn install
 npx expo start
 ```
 
-### 🔑 **Konfigurasi API**
-API produk menggunakan `https://dummyjson.com/products` yang sudah tertanam di `ProductScreen.js`.
-
----
-
-## 📜 **4. Penjelasan Kode Per File**
-
-### **1. `CartContext.js`** *(src/context/)*
-Mengelola state global untuk keranjang belanja dan transaksi.
-- `addToCart(product)`: Menambah produk ke keranjang.
-- `updateQuantity(id, amount)`: Update jumlah produk.
-- `removeFromCart(id)`: Hapus produk dari keranjang.
-- `addTransaction(transaction)`: Menyimpan transaksi ke `AsyncStorage`.
-- `deleteTransaction(id)`: Menghapus transaksi dari `AsyncStorage`.
-
-### **2. `ProductScreen.js`** *(src/screens/)*
-Menampilkan daftar produk.
-- Data produk diambil dari API menggunakan `axios`.
-- Produk ditampilkan dalam **Grid 2 Kolom**.
-- **Pencarian & Filter:** Filter produk berdasarkan kategori.
-- **Modal Detail:** Ketika produk diklik, tampil detail beserta tombol `Add to Cart`.
-
-### **3. `CartScreen.js`** *(src/screens/)*
-Menampilkan produk yang ditambahkan ke keranjang.
-- **Update:** Tambah/kurangi jumlah produk.
-- **Hapus:** Produk bisa dihapus dengan ikon `X` di pojok kanan atas.
-- **Payment:** Tombol "Lanjutkan Pembayaran" akan membuka modal input pembayaran.
-
-### **4. `TransactionList.js`** *(src/screens/)*
-Menampilkan daftar transaksi yang tersimpan di `AsyncStorage`.
-- **Detail:** Klik transaksi untuk melihat detail produk.
-- **Hapus:** Tombol sampah (trash) untuk menghapus transaksi.
-
-### **5. `TransactionDetail.js`** *(src/screens/)*
-Menampilkan detail setiap transaksi, termasuk:
-- Produk yang dibeli.
-- Total belanja, jumlah pembayaran, dan kembalian.
-
----
-
-## 🚀 **5. Fitur Utama**
-1. **Product Page:** Lihat produk, filter, cari, dan detail.
-2. **Cart Page:** Tambah, kurangi, hapus produk dari keranjang.
-3. **Payment:** Input pembayaran & hitung kembalian.
-4. **Transaction History:** Riwayat transaksi dengan detail.
-5. **Delete Transaction:** Hapus transaksi jika tidak diperlukan.
-6. **Badge Keranjang:** Menampilkan jumlah item di header.
-
----
-
-## 📦 **6. Build & Deploy APK**
-
-1. **Login Expo:**
-```bash
-npx expo login
-```
-
-2. **Build APK:**
+4. **Build APK (Production):**
 ```bash
 eas build -p android --profile production
 ```
 
-3. **Download APK:** Link akan muncul setelah build selesai.
+## 📄 Lisensi & Kontributor
+- **Lisensi:** MIT License
+- **Kontributor:** Akbar Maulana Rahmat (Developer Utama)
 
----
-
-## 📜 **7. Lisensi & Kontributor**
-### **Lisensi:** MIT License
-
-### **Kontributor:**
-1. **Developer:** [Nama Anda]
-2. **Dokumentasi:** ChatGPT
-
-Terima kasih telah menggunakan aplikasi ini! Jika ada pertanyaan atau saran, silakan hubungi saya. 😊
+Jika Anda ingin berkontribusi, silakan buat pull request atau laporkan masalah pada repository GitHub. 😊
 
