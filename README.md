@@ -1,59 +1,51 @@
-# Marketplace App
+# 📱 Marketplace App
 
-Marketplace App adalah aplikasi sederhana berbasis React Native yang memungkinkan pengguna untuk melihat daftar produk, menambahkannya ke keranjang, melakukan pembayaran, dan melihat riwayat transaksi.
+Marketplace App adalah aplikasi demo marketplace sederhana yang dibangun menggunakan **React Native**, **Expo**, dan **AsyncStorage**. Aplikasi ini memungkinkan pengguna untuk melihat produk, menambahkannya ke keranjang, melakukan pembayaran, dan melihat riwayat transaksi.
 
-## 🎯 **Tujuan Aplikasi**
-Aplikasi ini dibuat sebagai demo untuk menampilkan proses transaksi marketplace sederhana, termasuk pengelolaan keranjang belanja, pembayaran, dan pencatatan transaksi.
+## 🎯 Tujuan Aplikasi
+Aplikasi ini bertujuan untuk memberikan pemahaman dasar tentang:
+- Penggunaan **React Native** untuk mobile development.
+- Integrasi **API** untuk mendapatkan data produk.
+- Manajemen state menggunakan **Context API**.
+- Penyimpanan data lokal dengan **AsyncStorage**.
 
----
 
----
 
-## 🌐 **API yang Digunakan**
-Aplikasi ini menggunakan DummyJSON API:
-- **Produk:** `https://dummyjson.com/products`
+## 🌐 API
+Aplikasi ini menggunakan **DummyJSON API** untuk data produk:
+- Endpoint: [https://dummyjson.com/products](https://dummyjson.com/products)
 
----
+## 🚀 Fitur Utama
+1. **Halaman Produk:**
+   - Menampilkan daftar produk dalam bentuk grid.
+   - Klik produk untuk melihat detail atau tambahkan ke keranjang.
 
-## 🚀 **Fitur Utama**
+2. **Keranjang:**
+   - Lihat daftar produk yang dipilih.
+   - Update jumlah produk (+/-).
+   - Hapus produk dengan tombol **X** di pojok kanan atas.
+   - **Badge Keranjang** menunjukkan jumlah item yang dipilih.
 
-### 1. **Halaman Produk**
-- Menampilkan produk dalam bentuk grid.
-- Pencarian produk berdasarkan nama.
-- Detail produk termasuk deskripsi, harga, dan stok.
-- Tombol *Add to Cart* untuk menambah produk ke keranjang.
+3. **Pembayaran:**
+   - Input jumlah pembayaran.
+   - Kembalian otomatis dihitung.
+   - Transaksi disimpan ke **AsyncStorage**.
 
-### 2. **Keranjang Belanja**
-- Menampilkan produk yang ditambahkan ke keranjang.
-- Mengubah jumlah produk dengan tombol **+** dan **-**.
-- Menghapus produk dari keranjang dengan ikon **X** di pojok kanan atas.
-- Badge keranjang di tab navigasi yang menunjukkan jumlah item.
+4. **Riwayat Transaksi:**
+   - Tampilkan daftar transaksi dengan ID unik.
+   - Klik transaksi untuk melihat detailnya.
+   - Hapus transaksi jika tidak diperlukan.
 
-### 3. **Input Pembayaran** *(Fitur Tambahan)*
-- Input jumlah pembayaran saat checkout.
-- Menghitung kembalian secara otomatis.
-- Notifikasi modern setelah transaksi berhasil.
+## 🔨 Build & Deploy
+Untuk menjalankan proyek ini secara lokal:
 
-### 4. **Riwayat Transaksi**
-- Menampilkan daftar transaksi yang telah dilakukan.
-- Transaksi terbaru muncul di bagian atas.
-- Menampilkan detail setiap transaksi, termasuk daftar produk, total pembayaran, dan kembalian.
-- **Fitur Hapus Transaksi**: Setiap transaksi dapat dihapus.
-
-### 5. **Manajemen Data Lokal** *(Fitur Tambahan)*
-- Data keranjang dan transaksi disimpan secara lokal menggunakan **AsyncStorage**, sehingga tetap tersedia setelah aplikasi ditutup.
-
----
-
-## ⚙️ **Instalasi dan Menjalankan Proyek**
-
-1. **Kloning Repositori:**
+1. **Clone Repository:**
 ```bash
 git clone https://github.com/username/marketplace-app.git
 cd marketplace-app
 ```
 
-2. **Instal Dependensi:**
+2. **Install Dependensi:**
 ```bash
 npm install
 ```
@@ -63,55 +55,14 @@ npm install
 npx expo start
 ```
 
----
-
-## 📦 **Build APK (Android)** *(Fitur Build & Deploy)*
-
-1. **Instal EAS CLI:**
-```bash
-npm install -g eas-cli
-```
-
-2. **Login ke Expo:**
-```bash
-eas login
-```
-
-3. **Konfigurasi Build:**
-Buat file `eas.json` di root proyek dengan isi:
-```json
-{
-  "build": {
-    "production": {
-      "distribution": "apk",
-      "android": {
-        "buildType": "apk"
-      }
-    }
-  }
-}
-```
-
-4. **Build APK:**
+4. **Build APK (Production):**
 ```bash
 eas build -p android --profile production
 ```
 
-5. **Hasil Build:**
-Setelah build selesai, Anda akan mendapatkan link unduhan APK di terminal.
+## 📄 Lisensi & Kontributor
+- **Lisensi:** MIT License
+- **Kontributor:** Akbar (Developer Utama)
 
----
-
-## 📝 **Lisensi**
-Aplikasi ini dilisensikan di bawah lisensi MIT. Anda bebas menggunakan, mengubah, dan mendistribusikan proyek ini dengan tetap mencantumkan kredit kepada pembuat.
-
----
-
-## 👥 **Kontributor**
-- **[Akbar Maulana R]** – *Pengembang Utama*
-
----
-
-## 📞 **Kontak**
-Untuk pertanyaan atau kolaborasi, silakan hubungi: [akbarmaulanar21@gmail.com]
+Jika Anda ingin berkontribusi, silakan buat pull request atau laporkan masalah pada repository GitHub. 😊
 
