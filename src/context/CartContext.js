@@ -1,4 +1,5 @@
-// CartContext.js
+// CartContext.js - Context untuk manajemen keranjang dan transaksi
+
 import React, {
   createContext,
   useContext,
@@ -9,22 +10,28 @@ import React, {
 } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+// Membuat Context untuk Keranjang
 const CartContext = createContext();
 
+// Reducer untuk mengelola state keranjang
 const cartReducer = (state, action) => {
   switch (action.type) {
+    // 🛒 Menambahkan produk ke keranjang
     case "ADD_TO_CART":
       const existingItem = state.find((item) => item.id === action.payload.id);
       if (existingItem) {
+        // Jika produk sudah ada, tambahkan jumlahnya
         return state.map((item) =>
           item.id === action.payload.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       } else {
+        // Jika belum ada, tambahkan produk baru dengan quantity = 1
         return [...state, { ...action.payload, quantity: 1 }];
       }
 
+    // 🔄 Mengupdate jumlah produk
     case "UPDATE_QUANTITY":
       return state.map((item) =>
         item.id === action.payload.id
@@ -35,9 +42,11 @@ const cartReducer = (state, action) => {
           : item
       );
 
+    // ❌ Menghapus produk dari keranjang
     case "REMOVE_FROM_CART":
       return state.filter((item) => item.id !== action.payload);
 
+    // 🧹 Mengosongkan keranjang
     case "CLEAR_CART":
       return [];
 
@@ -46,11 +55,12 @@ const cartReducer = (state, action) => {
   }
 };
 
+// Provider untuk memberikan akses Context ke seluruh aplikasi
 export const CartProvider = ({ children }) => {
-  const [cart, dispatch] = useReducer(cartReducer, []);
-  const [transactions, setTransactions] = useState([]);
+  const [cart, dispatch] = useReducer(cartReducer, []); // State keranjang
+  const [transactions, setTransactions] = useState([]); // State transaksi
 
-  // 🔑 Ambil Transaksi dari AsyncStorage saat aplikasi dimulai
+  // 🔑 Load transaksi dari AsyncStorage saat aplikasi dimulai
   useEffect(() => {
     const loadTransactions = async () => {
       try {
@@ -65,14 +75,14 @@ export const CartProvider = ({ children }) => {
     loadTransactions();
   }, []);
 
-  // 🔄 Simpan Transaksi ke AsyncStorage setiap kali berubah
+  // 🔄 Simpan transaksi ke AsyncStorage setiap kali berubah
   useEffect(() => {
     const saveTransactions = async () => {
       try {
         await AsyncStorage.setItem(
           "transactions",
           JSON.stringify(transactions)
-        ); // 🚀 Simpan transaksi
+        );
       } catch (error) {
         console.error("Failed to save transactions:", error);
       }
@@ -80,34 +90,37 @@ export const CartProvider = ({ children }) => {
     saveTransactions();
   }, [transactions]);
 
-  // 🔑 Hitung Badge Keranjang
+  // 🟢 Hitung total item di keranjang (untuk badge)
   const cartCount = useMemo(
     () => cart.reduce((total, item) => total + item.quantity, 0),
     [cart]
   );
 
-  // 🚀 Tambah Transaksi
+  // 🚀 Menambah transaksi baru dan mengosongkan keranjang
   const addTransaction = (transaction) => {
     setTransactions((prev) => [...prev, transaction]);
-    dispatch({ type: "CLEAR_CART" }); // Kosongkan keranjang setelah payment
-    // console.log("Transaction Added:", transaction);
+    dispatch({ type: "CLEAR_CART" });
   };
 
-  // Fungsi Keranjang
+  // 🛒 Fungsi-fungsi Keranjang
   const addToCart = (product) =>
     dispatch({ type: "ADD_TO_CART", payload: product });
+
   const updateQuantity = (id, amount) =>
     dispatch({ type: "UPDATE_QUANTITY", payload: { id, amount } });
+
   const removeFromCart = (id) =>
     dispatch({ type: "REMOVE_FROM_CART", payload: id });
+
   const clearCart = () => dispatch({ type: "CLEAR_CART" });
 
-  // 🚀 Hapus Transaksi
+  // ❌ Menghapus transaksi berdasarkan ID
   const deleteTransaction = (id) => {
     const updatedTransactions = transactions.filter((t) => t.id !== id);
     setTransactions(updatedTransactions);
   };
 
+  // 🔑 Menyediakan nilai Context untuk digunakan di komponen lain
   return (
     <CartContext.Provider
       value={{
@@ -127,4 +140,5 @@ export const CartProvider = ({ children }) => {
   );
 };
 
+// Hook untuk menggunakan Context di komponen lain
 export const useCart = () => useContext(CartContext);

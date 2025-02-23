@@ -1,3 +1,4 @@
+// 🛒 CartScreen: Menampilkan daftar produk di keranjang dan proses pembayaran.
 import React, { useState } from "react";
 import {
   View,
@@ -12,54 +13,51 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useCart } from "../context/CartContext";
 
+// Komponen utama untuk halaman Cart
 const CartScreen = () => {
   const { cart, clearCart, addTransaction, updateQuantity, removeFromCart } =
-    useCart();
+    useCart(); // 🔑 Mengambil state keranjang dan transaksi dari Context.
 
+  // State untuk modal pembayaran dan input jumlah pembayaran
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
-  const [alertModalVisible, setAlertModalVisible] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
-  const [change, setChange] = useState(0);
 
+  // 🔢 Menghitung total harga semua produk dalam keranjang
   const totalPrice = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
 
-  // Menampilkan Alert Modern
-  const showAlert = (message) => {
-    setAlertMessage(message);
-    setAlertModalVisible(true);
-  };
-
+  // 🟢 Fungsi untuk memproses pembayaran
   const handlePayment = () => {
     const payment = parseFloat(paymentAmount);
     if (isNaN(payment) || payment < totalPrice) {
-      showAlert("Jumlah pembayaran tidak cukup atau tidak valid!");
+      alert("Jumlah pembayaran tidak cukup atau tidak valid!");
       return;
     }
 
-    const kembalian = payment - totalPrice;
-    setChange(kembalian);
+    const change = payment - totalPrice; // 🔄 Menghitung kembalian
 
+    // 📝 Membuat data transaksi yang akan disimpan
     const transaction = {
       id: Date.now(),
       items: cart,
       total: totalPrice,
       paymentAmount: payment,
-      change: kembalian,
+      change: change,
     };
 
-    addTransaction(transaction);
-    clearCart();
+    addTransaction(transaction); // 🚀 Menyimpan transaksi ke AsyncStorage
+    clearCart(); // 🧹 Mengosongkan keranjang setelah pembayaran
     setPaymentModalVisible(false);
-    showAlert(`Pembayaran berhasil! Kembalian Anda: Rp${kembalian.toFixed(2)}`);
-    setPaymentAmount("");
+    alert(`Pembayaran berhasil! Kembalian Anda: Rp${change.toFixed(2)}`);
+    setPaymentAmount(""); // Reset input
   };
 
+  // 🛒 Render setiap item dalam keranjang
   const renderItem = ({ item }) => (
     <View style={styles.itemCard}>
+      {/* Tombol Hapus Produk */}
       <TouchableOpacity
         style={styles.deleteIcon}
         onPress={() => removeFromCart(item.id)}
@@ -67,6 +65,7 @@ const CartScreen = () => {
         <Ionicons name="close-sharp" size={22} color="red" />
       </TouchableOpacity>
 
+      {/* Informasi Produk */}
       <Image source={{ uri: item.thumbnail }} style={styles.image} />
       <View style={styles.itemInfo}>
         <Text style={styles.itemTitle}>{item.title}</Text>
@@ -77,6 +76,7 @@ const CartScreen = () => {
           Total: Rp{(item.price * item.quantity).toFixed(2)}
         </Text>
 
+        {/* Tombol untuk menambah dan mengurangi jumlah produk */}
         <View style={styles.quantityContainer}>
           <TouchableOpacity
             style={styles.quantityButton}
@@ -102,6 +102,7 @@ const CartScreen = () => {
     <View style={styles.container}>
       <Text style={styles.header}>🛒 Keranjang Belanja</Text>
 
+      {/* List Produk dalam Keranjang */}
       {cart.length > 0 ? (
         <>
           <FlatList
@@ -110,6 +111,7 @@ const CartScreen = () => {
             keyExtractor={(item) => item.id.toString()}
           />
 
+          {/* Bagian Footer untuk Total dan Tombol Pembayaran */}
           <View style={styles.footer}>
             <Text style={styles.totalText}>
               Total: Rp{totalPrice.toFixed(2)}
@@ -135,6 +137,7 @@ const CartScreen = () => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
+            {/* Header Modal */}
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>💰 Pembayaran</Text>
               <TouchableOpacity onPress={() => setPaymentModalVisible(false)}>
@@ -142,6 +145,7 @@ const CartScreen = () => {
               </TouchableOpacity>
             </View>
 
+            {/* Input Pembayaran */}
             <Text style={styles.totalText}>
               Total Belanja: Rp{totalPrice.toFixed(2)}
             </Text>
@@ -156,6 +160,7 @@ const CartScreen = () => {
               }
             />
 
+            {/* Tombol Bayar dan Batal */}
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 style={styles.paymentButton}
@@ -174,31 +179,11 @@ const CartScreen = () => {
           </View>
         </View>
       </Modal>
-
-      {/* Modal Alert  */}
-      <Modal
-        visible={alertModalVisible}
-        animationType="fade"
-        transparent={true}
-        onRequestClose={() => setAlertModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.alertContainer}>
-            <Ionicons name="information-circle" size={50} color="#007bff" />
-            <Text style={styles.alertText}>{alertMessage}</Text>
-            <TouchableOpacity
-              style={styles.okButton}
-              onPress={() => setAlertModalVisible(false)}
-            >
-              <Text style={styles.okButtonText}>OK</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 };
 
+// Styles for CartScreen
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f8f8f8", padding: 10 },
   header: {

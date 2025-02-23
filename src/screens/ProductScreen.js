@@ -42,6 +42,8 @@ const ProductScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const { addToCart } = useCart();
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertVisible, setAlertVisible] = useState(false);
 
   // Fetch Produk & Kategori
   const fetchProducts = async () => {
@@ -50,6 +52,7 @@ const ProductScreen = () => {
       setProducts(res.data.products);
       setFilteredProducts(res.data.products);
 
+      // Ambil kategori unik untuk filter
       const uniqueCategories = [
         "All",
         ...new Set(res.data.products.map((item) => item.category)),
@@ -65,7 +68,7 @@ const ProductScreen = () => {
     fetchProducts();
   }, []);
 
-  // Pencarian Produk
+  // Pencarian Produk berdasarkan judul
   const handleSearch = (query) => {
     setSearchQuery(query);
     const filtered = products.filter((product) =>
@@ -74,7 +77,7 @@ const ProductScreen = () => {
     setFilteredProducts(filtered);
   };
 
-  // Filter Kategori
+  // Filter Produk berdasarkan Kategori
   const handleCategoryFilter = (category) => {
     setSelectedCategory(category);
     if (category === "All") {
@@ -87,10 +90,16 @@ const ProductScreen = () => {
     }
   };
 
-  // Detail Produk
+  // Menampilkan Detail Produk
   const showProductDetail = (product) => {
     setSelectedProduct(product);
     setModalVisible(true);
+  };
+
+  // Menampilkan Alert Modern
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setAlertVisible(true);
   };
 
   // Render Produk
@@ -98,7 +107,10 @@ const ProductScreen = () => {
     <ProductCard
       item={item}
       onPress={() => showProductDetail(item)}
-      onAddToCart={() => addToCart(item)}
+      onAddToCart={() => {
+        addToCart(item);
+        showAlert("Produk berhasil ditambahkan ke keranjang!");
+      }}
     />
   );
 
@@ -251,7 +263,7 @@ const ProductScreen = () => {
                 )}
               </ScrollView>
 
-              {/* Footer Modal */}
+              {/* Tombol Tambah ke Keranjang */}
               <View style={styles.modalFooter}>
                 <TouchableOpacity
                   style={styles.footerButton}
@@ -267,6 +279,27 @@ const ProductScreen = () => {
           </View>
         </Modal>
       )}
+
+      {/* Modal Alert */}
+      <Modal
+        visible={alertVisible}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setAlertVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.alertContainer}>
+            <Ionicons name="checkmark-circle" size={50} color="#007bff" />
+            <Text style={styles.alertText}>{alertMessage}</Text>
+            <TouchableOpacity
+              style={styles.okButton}
+              onPress={() => setAlertVisible(false)}
+            >
+              <Text style={styles.okButtonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -322,7 +355,7 @@ const styles = StyleSheet.create({
   },
   buttonText: { color: "#fff", fontWeight: "bold" },
 
-  // Modal Styles
+  // Modal Detail Product
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
@@ -368,6 +401,30 @@ const styles = StyleSheet.create({
   reviewComment: { fontStyle: "italic", marginTop: 5 },
   reviewDate: { fontSize: 12, color: "#777", marginTop: 2 },
   noReview: { fontSize: 14, color: "#888", marginVertical: 10 },
+
+  // modal alert
+  alertContainer: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 12,
+    alignItems: "center",
+    width: "85%",
+    elevation: 5,
+  },
+  alertText: {
+    fontSize: 18,
+    color: "#333",
+    textAlign: "center",
+    marginVertical: 10,
+  },
+  okButton: {
+    backgroundColor: "#007bff",
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  okButtonText: { color: "#fff", fontWeight: "bold" },
 
   // Footer Modal
   modalFooter: {
